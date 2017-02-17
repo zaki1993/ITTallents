@@ -115,6 +115,7 @@ public class BSTree<T> {
 			else{
 				if(copy.getRight() == null){
 					copy.setRight(new Node(value, null, null));
+					this.m_size++;
 					return;
 				}
 				else{
