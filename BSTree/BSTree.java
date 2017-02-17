@@ -1,4 +1,3 @@
-import javax.sound.midi.Synthesizer;
 
 public class BSTree<T> {
 	private class Node{
@@ -89,6 +88,7 @@ public class BSTree<T> {
 				m_root = left;
 			}
 		}
+		this.m_size--;
 	}
 	
 	public void add(T value){
@@ -199,6 +199,7 @@ public class BSTree<T> {
 				copy.setRight(right);
 			}
 		}
+		this.m_size--;
 		return true;
 	}
 	
