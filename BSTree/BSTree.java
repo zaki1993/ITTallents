@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class BSTree<T> {
 	private class Node{
@@ -69,6 +70,54 @@ public class BSTree<T> {
 			}
 		}
 		this.m_size--;
+	}
+	
+	private int heightPrivate(Node root){
+		return root == null ? 0 : 1 + Math.max(heightPrivate(root.m_left), heightPrivate(root.m_right));
+	}
+	
+	private int widthPrivate(Node root){
+		if(root == null){
+			return 0;
+		}
+		if(root.m_left == null || root.m_right == null){
+			return 1 + widthPrivate(root.m_left) + widthPrivate(root.m_right);
+		}
+		return widthPrivate(root.m_left) + widthPrivate(root.m_right);
+	}
+	
+	private void getKLayerPrivate(Node root, ArrayList<T> layer, int k){
+		if(root == null){
+			return;
+		}
+		if(k == 0){
+			layer.add(root.m_value);
+			return;
+		}
+		getKLayerPrivate(root.m_left, layer, k - 1);
+		getKLayerPrivate(root.m_right, layer, k - 1);
+	}
+	
+	private void getLeafsPrivate(Node root, ArrayList<T> leafs){
+		if(root == null){
+			return;
+		}
+		if(root.m_left == null && root.m_right == null){
+			leafs.add(root.m_value);
+		}
+		getLeafsPrivate(root.m_left, leafs);
+		getLeafsPrivate(root.m_right, leafs);
+	}
+	
+	private void getNonLeafsPrivate(Node root, ArrayList<T> nonLeafs){
+		if(root == null){
+			return;
+		}
+		if(root.m_left != null && root.m_right != null){
+			nonLeafs.add(root.m_value);
+		}
+		getNonLeafsPrivate(root.m_left, nonLeafs);
+		getNonLeafsPrivate(root.m_right, nonLeafs);
 	}
 	
 	public void add(T value){
@@ -184,8 +233,37 @@ public class BSTree<T> {
 		return true;
 	}
 	
-	public int size(){
+	public int count(){
 		return m_size;
+	}
+	
+	public int height(){
+		return heightPrivate(m_root);
+	}
+	
+	public int width(){
+		return 1 + widthPrivate(m_root);
+	}
+	
+	public ArrayList<T> getKLayer(int k){
+		if(k > height() || k < 0){
+			return new ArrayList<T>();
+		}
+		ArrayList<T> result = new ArrayList<>();
+		getKLayerPrivate(m_root, result, k);
+		return result;
+	}
+	
+	public ArrayList<T> getLeafs(){
+		ArrayList<T> result = new ArrayList<>();
+		getLeafsPrivate(m_root, result);
+		return result;
+	}
+	
+	public ArrayList<T> getNonLeafs(){
+		ArrayList<T> result = new ArrayList<>();
+		getNonLeafsPrivate(m_root, result);
+		return result;
 	}
 	
 	public void preOrderTraversal(){
