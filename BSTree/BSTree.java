@@ -9,26 +9,6 @@ public class BSTree<T> {
 			this.m_left = left;
 			this.m_right = right;
 		}
-		
-		T getValue(){
-			return this.m_value;
-		}
-		
-		Node getLeft(){
-			return this.m_left;
-		}
-		
-		Node getRight(){
-			return this.m_right;
-		}
-		
-		void setLeft(Node toSet){
-			this.m_left = toSet;
-		}
-		
-		void setRight(Node toSet){
-			this.m_right = toSet;
-		}
 	};
 	
 	private Node m_root;
@@ -42,46 +22,46 @@ public class BSTree<T> {
 		if(root == null){
 			return;
 		}
-		System.out.print(root.getValue() + " ");
-		preOrderPrivate(root.getLeft());
-		preOrderPrivate(root.getRight());
+		System.out.print(root.m_value + " ");
+		preOrderPrivate(root.m_left);
+		preOrderPrivate(root.m_right);
 	}
 	
 	private void postOrderPrivate(Node root){
 		if(root == null){
 			return;
 		}
-		postOrderPrivate(root.getLeft());
-		postOrderPrivate(root.getRight());
-		System.out.print(root.getValue() + " ");
+		postOrderPrivate(root.m_left);
+		postOrderPrivate(root.m_right);
+		System.out.print(root.m_value + " ");
 	}
 	
 	private void inOrderPrivate(Node root){
 		if(root == null){
 			return;
 		}
-		inOrderPrivate(root.getLeft());
-		System.out.print(root.getValue() + " ");
-		inOrderPrivate(root.getRight());
+		inOrderPrivate(root.m_left);
+		System.out.print(root.m_value + " ");
+		inOrderPrivate(root.m_right);
 	}
 	
 	private void removeRootPrivate(){
-		if(m_root.getLeft() == null && m_root.getRight() == null){
+		if(m_root.m_left == null && m_root.m_right == null){
 			m_root = null;
 		}
-		else if(m_root.getLeft() == null){
-			m_root = m_root.getRight();
+		else if(m_root.m_left == null){
+			m_root = m_root.m_right;
 		}
 		else{
-			Node right = m_root.getRight();
-			Node left = m_root.getLeft();
+			Node right = m_root.m_right;
+			Node left = m_root.m_left;
 			Node mostLeft = right;
 			if(right != null){
-				while(mostLeft.getLeft() != null){
-					mostLeft = mostLeft.getLeft();
+				while(mostLeft.m_left != null){
+					mostLeft = mostLeft.m_left;
 				}
-				mostLeft.setLeft(left);
-				m_root.setLeft(null);
+				mostLeft.m_left = left;
+				m_root.m_left = null;
 				m_root = right;
 			}
 			else{
@@ -102,24 +82,24 @@ public class BSTree<T> {
 		}
 		Node copy = m_root;
 		while(true){
-			if(value.hashCode() - copy.getValue().hashCode() < 0){
-				if(copy.getLeft() == null){
-					copy.setLeft(new Node(value, null, null));
+			if(value.hashCode() - copy.m_value.hashCode() < 0){
+				if(copy.m_left == null){
+					copy.m_left = new Node(value, null, null);
 					this.m_size++;
 					return;
 				}
 				else{
-					copy = copy.getLeft();
+					copy = copy.m_left;
 				}
 			}
 			else{
-				if(copy.getRight() == null){
-					copy.setRight(new Node(value, null, null));
+				if(copy.m_right == null){
+					copy.m_right = new Node(value, null, null);
 					this.m_size++;
 					return;
 				}
 				else{
-					copy = copy.getRight();
+					copy = copy.m_right;
 				}				
 			}
 		}
@@ -128,14 +108,14 @@ public class BSTree<T> {
 	public boolean contains(T value){
 		Node copy = m_root;
 		while(copy != null){
-			if(copy.getValue().equals(value)){
+			if(copy.m_value.equals(value)){
 				return true;
 			}
-			if(value.hashCode() - copy.getValue().hashCode() < 0){
-				copy = copy.getLeft();
+			if(value.hashCode() - copy.m_value.hashCode() < 0){
+				copy = copy.m_left;
 			}
 			else{
-				copy = copy.getRight();
+				copy = copy.m_right;
 			}
 		}
 		return false;
@@ -146,7 +126,7 @@ public class BSTree<T> {
 			return false;
 		}
 		Node copy = m_root;
-		if(copy.getValue().hashCode() - value.hashCode() == 0){
+		if(copy.m_value.hashCode() - value.hashCode() == 0){
 			removeRootPrivate();
 			return true;
 		}
@@ -155,49 +135,49 @@ public class BSTree<T> {
 		boolean toDeleteLeft = false;
 		//find the node to delete
 		while(true){
-			if(copy.getLeft().getValue().hashCode() - value.hashCode() == 0){
-				left = copy.getLeft().getLeft();
-				right = copy.getLeft().getRight();
+			if(copy.m_left.m_value.hashCode() - value.hashCode() == 0){
+				left = copy.m_left.m_left;
+				right = copy.m_left.m_right;
 				toDeleteLeft = true;
 				break;
 			}
-			if(copy.getRight().getValue().hashCode() - value.hashCode() == 0){
-				left = copy.getRight().getLeft();
-				right = copy.getRight().getRight();
+			if(copy.m_right.m_value.hashCode() - value.hashCode() == 0){
+				left = copy.m_right.m_left;
+				right = copy.m_right.m_right;
 				break;
 			}
-			if(copy.getValue().hashCode() - value.hashCode() > 0){
-				copy = copy.getLeft();
+			if(copy.m_value.hashCode() - value.hashCode() > 0){
+				copy = copy.m_left;
 			}
 			else{
-				copy = copy.getRight();
+				copy = copy.m_right;
 			}
 		}
 		if(right == null && left == null){
 			if(toDeleteLeft){
-				copy.setLeft(null);
+				copy.m_left = null;
 			}
 			else{
-				copy.setRight(null);
+				copy.m_right = null;
 			}
 		}
 		else if(right == null){
-			copy.setRight(left);
+			copy.m_right = left;
 		}
 		else if(left == null){
-			copy.setRight(right);
+			copy.m_right = right;
 		}
 		else{
 			Node mostLeft = right;
-			while(mostLeft.getLeft() != null){
-				mostLeft = mostLeft.getLeft();
+			while(mostLeft.m_left != null){
+				mostLeft = mostLeft.m_left;
 			}
-			mostLeft.setLeft(left);
+			mostLeft.m_left = left;
 			if(toDeleteLeft){
-				copy.setLeft(right);
+				copy.m_left = right;
 			}
 			else{
-				copy.setRight(right);
+				copy.m_right = right;
 			}
 		}
 		this.m_size--;
