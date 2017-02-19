@@ -63,15 +63,22 @@ public class ArrayList<T> {
 	}
 	
 	public void add(int index, T value){
-		if(index < 0 || index > size){
+		if(index < 0 || index > this.size){
 			return;
 		}
 		resizeCheck();
 		for(int i = size - 1 ; i >= index; i--){
-			data[i + 1] = data[i];
+			this.data[i + 1] = data[i];
 		}
-		data[index] = value;
-		size++;
+		this.data[index] = value;
+		this.size++;
+	}
+	
+	public void set(int index, T value){
+		if(index < 0 || index > this.size){
+			return;
+		}
+		this.data[index] = value;
 	}
 	
 	public void remove(T value){
@@ -137,3 +144,4 @@ public class ArrayList<T> {
 		return result;
 	}
 }
+
