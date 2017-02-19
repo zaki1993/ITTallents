@@ -1,88 +1,55 @@
-package List;
 
 public class LinkedList<T> {
 	private class Node{
-		private Node next;
-		private Node previous;
-		private T value;
+		private Node m_next;
+		private Node m_previous;
+		private T m_value;
 		Node(T value, Node previous, Node next){
 			super();
-			this.value = value;
-			this.previous = previous;
-			this.next = next;
+			this.m_value = value;
+			this.m_previous = previous;
+			this.m_next = next;
 		}
 		
-		public void setNext(Node next) {
-			this.next = next;
-		}
-		
-		public void setPrevious(Node previous) {
-			this.previous = previous;
-		}
-		
-		public boolean hasNext() {
-			return !(next == null);
-		}
-		
-		public boolean hasPrevious(){
-			return !(previous == null);
-		}
-		
-		public Node getNext() {
-			return next;
-		}
-		
-		public Node getPrevious(){
-			return previous;
-		}
-		
-		public T getValue() {
-			return value;
-		}
-		
-		public void setValue(T value) {
-			this.value = value;
+		boolean hasNext(){
+			return !(m_next == null);
 		}
 	}
 	
 	private class Iterator{
-		private Node current;
+		private Node m_current;
 		Iterator(){
-			Node copy = head;
-			current = copy;
+			Node copy = m_head;
+			m_current = copy;
 		}
 		
 		boolean hasNext(){
-			return current != null;
+			return m_current != null;
 		}
 		
 		void goToNext(){
-			current = current.getNext();
-		}
-		
-		T getValue(){
-			return current.getValue();
+			m_current = m_current.m_next;
 		}
 	}
 	
-	private Node head;
-	private Node tail;
+	private Node m_head;
+	private Node m_tail;
 	private int size;
 	
 	LinkedList(){
-		head = new Node(null, null, null);
-		tail = head;
+		m_head = null;
+		m_tail = null;
 		this.size = 0;
 	}
 	
 	private LinkedList(LinkedList<T> other){
 		Node copy = other.find(0);
-		head = new Node(null, null, null);
-		tail = head;
+		m_head = null;
+		m_tail = m_head;
 		this.size = 0;
 		while(copy.hasNext()){
-			this.add(copy.getValue());
-			copy = copy.getNext();
+			this.add(copy.m_value);
+			copy = copy.m_next;
 		}
 	}
 	
@@ -90,29 +57,30 @@ public class LinkedList<T> {
 		int currentIndex = 0;
 		Node copy = new Node(null, null, null);
 		if(index <= size/2){
-			copy = head;
+			copy = m_head;
 			while(currentIndex < index){
 				currentIndex++;
-				copy = copy.getNext();
+				copy = copy.m_next;
 			}
 		}
 		else{
-			copy = tail;
+			copy = m_tail;
 			while(currentIndex < size - index){
 				currentIndex++;
-				copy = copy.getPrevious();
+				copy = copy.m_previous;
 			}
 		}
 		return copy;
 	}
 	
 	public void add(T value){
-		if(size != 0){
-			addLast(value);
+		if(m_head == null){
+			m_head = new Node(value, null, m_tail);
+			m_tail = m_head;
+			size++;
 		}
 		else{
-			tail.setValue(value);
-			this.size++;
+			addLast(value);
 		}
 	}
 	
@@ -120,39 +88,37 @@ public class LinkedList<T> {
 		if(index < 0 || index > this.size){
 			return;
 		}
-		int currentElement = 0;
 		Node copy = find(index);
 		//The actual adding
 		Node newNode = new Node(value, null, null);
-		if(copy == head){
+		if(copy == m_head){
 			this.addFirst(value);
 		}
-		else if(copy == tail){
+		else if(copy == m_tail){
 			this.addLast(value);
 		}
 		else{
-			System.out.println(copy.getValue());
-			newNode.setPrevious(copy);
-			newNode.setNext(copy.getNext());
-			copy.getNext().setPrevious(newNode);
-			copy.setNext(newNode);
+			newNode.m_previous = copy;
+			newNode.m_next = copy.m_next;
+			copy.m_next.m_previous = newNode;
+			copy.m_next = newNode;
 			this.size++;
 		}
 	}
 	
 	public void addFirst(T value){
-		Node copy = head;
+		Node copy = m_head;
 		Node newNode = new Node(value, null, copy);
-		copy.setPrevious(newNode);
-		head = newNode;
+		copy.m_previous = newNode;
+		m_head = newNode;
 		this.size++;
 	}
 	
 	public void addLast(T value){
-		Node copy = tail;
+		Node copy = m_tail;
 		Node newNode = new Node(value, copy, null);
-		copy.setNext(newNode);
-		tail = newNode;
+		copy.m_next = newNode;
+		m_tail = newNode;
 		this.size++;
 	}
 	
@@ -160,39 +126,53 @@ public class LinkedList<T> {
 		if(!this.contains(value)){
 			return;
 		}
-		if(size == 1){
-			head = new Node(null, null, null);
-			tail = head;
-			size--;
-			return;
-		}
 		int index = this.indexOf(value);
 		Node toRemove = find(index);
-		toRemove.getPrevious().setNext(toRemove.getNext());
-		toRemove.getNext().setPrevious(toRemove.getPrevious());
-		toRemove = null;
-		this.size--;
+		if(toRemove == m_head){
+			removeFirst();
+		}
+		else if(toRemove == m_tail){
+			removeLast();
+		}
+		else{
+			toRemove.m_previous.m_next = toRemove.m_next;
+			toRemove.m_next.m_previous = toRemove.m_previous;
+			toRemove = null;
+			this.size--;
+		}
 	}
 	
 	public void removeFirst(){
-		if(!head.hasNext()){
+		if(m_head == null){
 			return;
 		}
-		Node copy = head;
-		copy = copy.getNext();
-		head = copy;
-		copy = null;
+		if(m_head == m_tail){
+			m_head = null;
+			m_tail = m_head;
+		}
+		else{
+			Node copy = m_head;
+			copy = copy.m_next;
+			m_head = copy;
+			copy = null;
+		}
 		this.size--;
 	}
 	
 	public void removeLast(){
-		if(!tail.hasPrevious()){
+		if(m_tail == null){
 			return;
 		}
-		Node copy = tail;
-		copy = copy.getPrevious();
-		tail = copy;
-		copy = null;
+		if(m_head == m_tail){
+			m_head = null;
+			m_tail = m_head;
+		}
+		else{
+			Node copy = m_tail;
+			copy = copy.m_previous;
+			m_tail = copy;
+			copy = null;
+		}
 		this.size--;
 	}
 	
@@ -204,22 +184,22 @@ public class LinkedList<T> {
 		if(index < 0 || index >= this.size){
 			return null;
 		}
-		return find(index).getValue();
+		return find(index).m_value;
 	}
 	
 	public T getFirst(){
-		return head.getValue();
+		return m_head.m_value;
 	}
 	
 	public T getLast(){
-		return tail.getValue();
+		return m_tail.m_value;
 	}
 
 	public boolean contains(T value){
 		for(Iterator i = new Iterator();i.hasNext();i.goToNext()){
-			if(i.getValue().equals(value)){
+			if(i.m_current.m_value.equals(value)){
 				//FUCK YOU INTEGER POOL
-				//i.getValue() == value works for the first 0 to 128 numbers
+				//i.m_value == value works for the first 0 to 128 numbers
 				return true;
 			}
 		}
@@ -232,7 +212,7 @@ public class LinkedList<T> {
 		}
 		int index = 0;
 		for(Iterator i = new Iterator(); i.hasNext();i.goToNext()){
-			if(i.getValue().equals(value)){
+			if(i.m_current.m_value.equals(value)){
 				break;
 			}
 			index++;
@@ -246,10 +226,10 @@ public class LinkedList<T> {
 	@Override
 	public String toString() {
 		String result = "[";
-		Node copy = head;
+		Node copy = m_head;
 		for(int i = 0; i < size; i++){
-			result += copy.getValue();
-			copy = copy.getNext();
+			result += copy.m_value;
+			copy = copy.m_next;
 			if(i < size - 1){
 				result += ", ";
 			}

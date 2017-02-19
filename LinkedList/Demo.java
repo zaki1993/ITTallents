@@ -1,4 +1,3 @@
-package List;
 
 public class Demo {
 
@@ -38,6 +37,7 @@ public class Demo {
 		zaki.removeLast();
 		System.out.println(zaki);
 		LinkedList<Integer> pesho = new LinkedList<>();
+		System.out.println(pesho);
 		pesho.removeLast();
 		pesho.removeFirst();
 		pesho.removeLast();
