@@ -6,12 +6,7 @@ public class HashSet<T> {
 	private int limit;
 	private int size;
 	public HashSet() {
-		this.limit = 7;
-		this.data = new ArrayList<>(this.limit);
-		this.size = 0;
-		for(int i = 0; i < limit; i++){
-			data.add(new LinkedList<>());
-		}
+		this(7);
 	}
 	
 	public HashSet(int limit) {
