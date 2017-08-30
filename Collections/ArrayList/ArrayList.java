@@ -20,9 +20,7 @@ public class ArrayList<T> {
 	}
 	
 	public ArrayList() {
-		this.limit = 8;
-		data = (T[]) new Object[this.limit];
-		size = 0;
+		this(8);
 	}
 	
 	private void resizeCheck(){
