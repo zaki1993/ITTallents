@@ -19,7 +19,7 @@ public class HashSet<T> {
 	}
 	
 	private boolean isPrime(int number){
-		for(int i = 2; i < number; i++){
+		for(int i = 3; i < number; i+=2){
 			if(number % i == 0){
 				return false;
 			}
